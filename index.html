@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoạt Hình TV - Thế Giới Hoạt Hình</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header" id="top">
+        <div class="logo">
+            <span class="logo-icon">▶</span>
+            <span>Hoạt Hình TV</span>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput"
+                   placeholder="Tìm kiếm phim hoạt hình...">
+            <button id="searchButton">Tìm kiếm</button>
+        </div>
+    </div>
+
+    <!-- Thanh điều hướng -->
+    <div class="head-link">
+        <a href="#top">Trang chủ</a>
+        <a href="#movie-list">Danh sách phim</a>
+        <a href="#player">Xem phim</a>
+        <a href="#footer">Liên hệ</a>
+    </div>
+
+    <!-- Nội dung trang -->
+    <div class="content">
+
+        <!-- Danh sách phim bên trái -->
+        <div class="left-content" id="movie-list">
+            <h2>Danh sách phim</h2>
+
+            <div class="sort-box">
+                <label for="sortSelect">Sắp xếp:</label>
+                <select id="sortSelect">
+                    <option value="latest">Mới cập nhật</option>
+                    <option value="views">Nhiều lượt xem</option>
+                </select>
+            </div>
+
+            <div id="movieList"></div>
+            <p id="emptyMessage" class="empty-message" hidden>
+                Không tìm thấy phim phù hợp.
+            </p>
+        </div>
+
+        <!-- Khu vực xem phim bên phải -->
+        <div class="right-content" id="player">
+            <h2 id="movieTitle">Tom và Jerry</h2>
+
+            <div class="video-container" id="videoContainer">
+                <iframe
+                    id="movieFrame"
+                    src="https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ"
+                    title="Video minh họa"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <p id="movieDescription" class="description">
+                Chào mừng bạn đến với Hoạt Hình TV!
+                Hãy chọn một video trong danh sách để bắt đầu xem.
+            </p>
+
+            <div class="notice">
+                <strong>Lưu ý:</strong> Video đang sử dụng là video minh họa.
+                Bạn có thể thay bằng video hoạt hình có nguồn phát hợp pháp,
+                thuyết minh tiếng Việt và chất lượng phù hợp.
+            </div>
+
+            <h3>Giới thiệu</h3>
+            <p>
+                Hoạt Hình TV là giao diện mô phỏng website xem hoạt hình
+                trực tuyến, được thiết kế đơn giản, dễ sử dụng cho mọi lứa tuổi.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer" id="footer">
+        <p>© 2026 Hoạt Hình TV. Giao diện phục vụ mục đích học tập.</p>
+        <p>An toàn - Thân thiện - Dễ sử dụng</p>
+    </div>
+
+    <script>
+        // Danh sách video minh họa.
+        // Thay videoId bằng ID video YouTube phù hợp khi sử dụng thực tế.
+        const movies = [
+            {
+                id: 1,
+                title: "Tom và Jerry",
+                description: "Những tình huống hài hước giữa chú mèo Tom và chuột Jerry.",
+                videoId: "aqz-KE-bpKQ",
+                views: 9800,
+                date: "2026-10-15"
+            },
+            {
+                id: 2,
+                title: "Thế giới động vật",
+                description: "Khám phá thế giới động vật qua video minh họa.",
+                videoId: "ScMzIvxBSi4",
+                views: 7500,
+                date: "2026-10-14"
+            },
+            {
+                id: 3,
+                title: "Cuộc phiêu lưu kỳ thú",
+                description: "Một video minh họa cho mục phim phiêu lưu.",
+                videoId: "M7lc1UVf-VE",
+                views: 12000,
+                date: "2026-10-12"
+            },
+            {
+                id: 4,
+                title: "Thế giới sắc màu",
+                description: "Video minh họa dành cho danh mục hoạt hình.",
+                videoId: "ysz5S6PUM-U",
+                views: 5600,
+                date: "2026-10-10"
+            }
+        ];
+
+        const movieList = document.getElementById("movieList");
+        const searchInput = document.getElementById("searchInput");
+        const searchButton = document.getElementById("searchButton");
+        const sortSelect = document.getElementById("sortSelect");
+        const movieTitle = document.getElementById("movieTitle");
+        const movieFrame = document.getElementById("movieFrame");
+        const movieDescription = document.getElementById("movieDescription");
+        const emptyMessage = document.getElementById("emptyMessage");
+
+        let currentMovieId = movies[0].id;
+
+        // Hiển thị video được chọn.
+        function playMovie(movieId) {
+            const movie = movies.find(item => item.id === movieId);
+
+            if (!movie) return;
+
+            currentMovieId = movie.id;
+            movieTitle.textContent = movie.title;
+            movieDescription.textContent = movie.description;
+
+            movieFrame.src =
+                "https://www.youtube-nocookie.com/embed/" + movie.videoId;
+
+            renderMovies();
+        }
+
+        // Lọc danh sách theo từ khóa và sắp xếp.
+        function renderMovies() {
+            const keyword = searchInput.value.trim().toLowerCase();
+            const sortType = sortSelect.value;
+
+            let filteredMovies = movies.filter(movie =>
+                movie.title.toLowerCase().includes(keyword)
+            );
+
+            if (sortType === "views") {
+                filteredMovies.sort((a, b) => b.views - a.views);
+            } else {
+                filteredMovies.sort((a, b) =>
+                    b.date.localeCompare(a.date)
+                );
+            }
+
+            movieList.replaceChildren();
+
+            filteredMovies.forEach(movie => {
+                const item = document.createElement("div");
+                item.className = "movie-item";
+
+                if (movie.id === currentMovieId) {
+                    item.classList.add("active");
+                }
+
+                const title = document.createElement("h3");
+                title.textContent = movie.title;
+
+                const views = document.createElement("p");
+                views.textContent =
+                    movie.views.toLocaleString("vi-VN") + " lượt xem";
+
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "watch-button";
+                button.textContent = "Xem phim";
+                button.addEventListener("click", () => playMovie(movie.id));
+
+                item.append(title, views, button);
+                movieList.appendChild(item);
+            });
+
+            emptyMessage.hidden = filteredMovies.length > 0;
+        }
+
+        searchButton.addEventListener("click", renderMovies);
+
+        searchInput.addEventListener("input", renderMovies);
+
+        searchInput.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                renderMovies();
+            }
+        });
+
+        sortSelect.addEventListener("change", renderMovies);
+
+        // Hiển thị danh sách và video đầu tiên khi mở trang.
+        renderMovies();
+        playMovie(movies[0].id);
+    </script>
+
+</body>
+</html>
